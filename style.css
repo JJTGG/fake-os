@@ -116,3 +116,22 @@ body {
   padding: 8px;
   cursor: pointer;
 }
+
+#files-list {
+  list-style: none;
+}
+
+#files-list li {
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#files-list li:hover {
+  background: #eee;
+}
+
+#files-back {
+  margin-bottom: 8px;
+  cursor: pointer;
+}
