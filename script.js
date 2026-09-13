@@ -1,5 +1,13 @@
 let use24Hour = false;
 let dragEnabled = true;
+let highestZ = 10;
+
+const taskbarApps = document.getElementById('taskbar-apps');
+
+function bringToFront(windowEl) {
+  highestZ++;
+  windowEl.style.zIndex = highestZ;
+}
 
 function updateClock() {
   const now = new Date();
@@ -20,26 +28,6 @@ const startMenu = document.getElementById('start-menu');
 
 startBtn.addEventListener('click', () => {
   startMenu.classList.toggle('hidden');
-});
-
-const notesWindow = document.getElementById('notes-window');
-const notesLink = document.querySelector('[data-app="notes"]');
-
-notesLink.addEventListener('click', () => {
-  notesWindow.classList.remove('hidden');
-  startMenu.classList.add('hidden');
-});
-
-notesWindow.querySelector('.close-btn').addEventListener('click', () => {
-  notesWindow.classList.add('hidden');
-});
-
-const notesTextarea = document.getElementById('notes-textarea');
-
-notesTextarea.value = localStorage.getItem('notes') || '';
-
-notesTextarea.addEventListener('input', () => {
-  localStorage.setItem('notes', notesTextarea.value);
 });
 
 function makeDraggable(windowEl) {
@@ -81,20 +69,72 @@ function makeDraggable(windowEl) {
   document.addEventListener('touchend', endDrag);
 }
 
+// Handles open/close/minimize/focus/taskbar for one app window.
+// Used by all four apps, so it earns being a shared function.
+function setupWindow(windowEl, appLink, appName) {
+  const closeBtn = windowEl.querySelector('.close-btn');
+  const minimizeBtn = windowEl.querySelector('.minimize-btn');
+  let taskbarBtn = null;
+
+  function addTaskbarBtn() {
+    if (taskbarBtn) return;
+    taskbarBtn = document.createElement('button');
+    taskbarBtn.textContent = appName;
+    taskbarBtn.classList.add('taskbar-item');
+    taskbarBtn.addEventListener('click', () => {
+      windowEl.classList.remove('hidden');
+      bringToFront(windowEl);
+      removeTaskbarBtn();
+    });
+    taskbarApps.appendChild(taskbarBtn);
+  }
+
+  function removeTaskbarBtn() {
+    if (taskbarBtn) {
+      taskbarBtn.remove();
+      taskbarBtn = null;
+    }
+  }
+
+  appLink.addEventListener('click', () => {
+    if (windowEl.classList.contains('hidden')) {
+      windowEl.classList.remove('hidden');
+    }
+    bringToFront(windowEl);
+    removeTaskbarBtn();
+    startMenu.classList.add('hidden');
+  });
+
+  windowEl.addEventListener('mousedown', () => bringToFront(windowEl));
+  windowEl.addEventListener('touchstart', () => bringToFront(windowEl));
+
+  closeBtn.addEventListener('click', () => {
+    windowEl.classList.add('hidden');
+    removeTaskbarBtn();
+  });
+
+  minimizeBtn.addEventListener('click', () => {
+    windowEl.classList.add('hidden');
+    addTaskbarBtn();
+  });
+}
+
+const notesWindow = document.getElementById('notes-window');
+const notesLink = document.querySelector('[data-app="notes"]');
+const notesTextarea = document.getElementById('notes-textarea');
+
+notesTextarea.value = localStorage.getItem('notes') || '';
+
+notesTextarea.addEventListener('input', () => {
+  localStorage.setItem('notes', notesTextarea.value);
+});
+
+setupWindow(notesWindow, notesLink, 'Notes');
 makeDraggable(notesWindow);
 
 const calcWindow = document.getElementById('calculator-window');
 const calcLink = document.querySelector('[data-app="calculator"]');
 const calcDisplay = document.getElementById('calc-display');
-
-calcLink.addEventListener('click', () => {
-  calcWindow.classList.remove('hidden');
-  startMenu.classList.add('hidden');
-});
-
-calcWindow.querySelector('.close-btn').addEventListener('click', () => {
-  calcWindow.classList.add('hidden');
-});
 
 document.querySelectorAll('#calc-buttons button').forEach((btn) => {
   btn.addEventListener('click', () => {
@@ -114,6 +154,7 @@ document.getElementById('calc-clear').addEventListener('click', () => {
   calcDisplay.value = '';
 });
 
+setupWindow(calcWindow, calcLink, 'Calculator');
 makeDraggable(calcWindow);
 
 const filesWindow = document.getElementById('files-window');
@@ -156,14 +197,8 @@ function renderFiles() {
 }
 
 filesLink.addEventListener('click', () => {
-  filesWindow.classList.remove('hidden');
-  startMenu.classList.add('hidden');
   currentPath = [fileSystem];
   renderFiles();
-});
-
-filesWindow.querySelector('.close-btn').addEventListener('click', () => {
-  filesWindow.classList.add('hidden');
 });
 
 filesBack.addEventListener('click', () => {
@@ -171,19 +206,11 @@ filesBack.addEventListener('click', () => {
   renderFiles();
 });
 
+setupWindow(filesWindow, filesLink, 'Files');
 makeDraggable(filesWindow);
 
 const settingsWindow = document.getElementById('settings-window');
 const settingsLink = document.querySelector('[data-app="settings"]');
-
-settingsLink.addEventListener('click', () => {
-  settingsWindow.classList.remove('hidden');
-  startMenu.classList.add('hidden');
-});
-
-settingsWindow.querySelector('.close-btn').addEventListener('click', () => {
-  settingsWindow.classList.add('hidden');
-});
 
 document.getElementById('toggle-dark').addEventListener('change', (e) => {
   document.body.classList.toggle('dark-mode', e.target.checked);
@@ -197,4 +224,5 @@ document.getElementById('toggle-drag').addEventListener('change', (e) => {
   dragEnabled = e.target.checked;
 });
 
+setupWindow(settingsWindow, settingsLink, 'Settings');
 makeDraggable(settingsWindow);
