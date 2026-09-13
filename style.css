@@ -135,3 +135,13 @@ body {
   margin-bottom: 8px;
   cursor: pointer;
 }
+
+body.dark-mode {
+  background: #111;
+  color: #fff;
+}
+
+body.dark-mode .app-window {
+  background: #2a2a2a;
+  color: #fff;
+}
