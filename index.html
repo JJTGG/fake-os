@@ -30,6 +30,35 @@
     Notes content goes here
   </div>
 </div>
+
+<div id="calculator-window" class="app-window hidden">
+  <div class="window-header">
+    <span>Calculator</span>
+    <button class="close-btn">×</button>
+  </div>
+  <div class="window-body">
+    <input type="text" id="calc-display" readonly>
+    <div id="calc-buttons">
+      <button data-val="7">7</button>
+      <button data-val="8">8</button>
+      <button data-val="9">9</button>
+      <button data-val="/">÷</button>
+      <button data-val="4">4</button>
+      <button data-val="5">5</button>
+      <button data-val="6">6</button>
+      <button data-val="*">×</button>
+      <button data-val="1">1</button>
+      <button data-val="2">2</button>
+      <button data-val="3">3</button>
+      <button data-val="-">−</button>
+      <button data-val="0">0</button>
+      <button data-val=".">.</button>
+      <button data-val="=" id="calc-equals">=</button>
+      <button data-val="+">+</button>
+    </div>
+    <button id="calc-clear">Clear</button>
+  </div>
+</div>
 </body>
 <script src="script.js"></script>
 </html>
