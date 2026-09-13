@@ -56,3 +56,37 @@ body {
   display: none;
 }
 
+.app-window {
+  position: absolute;
+  top: 80px;
+  left: 80px;
+  width: 280px;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.window-header {
+  background: #2a2a2a;
+  color: #fff;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.window-body {
+  padding: 10px;
+  color: #000;
+}
+
