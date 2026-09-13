@@ -4,6 +4,21 @@ let highestZ = 10;
 
 const taskbarApps = document.getElementById('taskbar-apps');
 
+if (localStorage.getItem('darkMode') === 'true') {
+  document.body.classList.add('dark-mode');
+  document.getElementById('toggle-dark').checked = true;
+}
+
+if (localStorage.getItem('use24Hour') === 'true') {
+  use24Hour = true;
+  document.getElementById('toggle-24h').checked = true;
+}
+
+if (localStorage.getItem('dragEnabled') === 'false') {
+  dragEnabled = false;
+  document.getElementById('toggle-drag').checked = false;
+}
+
 function bringToFront(windowEl) {
   highestZ++;
   windowEl.style.zIndex = highestZ;
@@ -194,6 +209,8 @@ document.querySelectorAll('#calc-buttons button').forEach((btn) => {
 
 document.getElementById('calc-clear').addEventListener('click', () => {
   calcDisplay.value = '';
+  calcValues = [];
+  calcCurrentNumber = '';
 });
 
 setupWindow(calcWindow, calcLink, 'Calculator');
@@ -256,14 +273,17 @@ const settingsLink = document.querySelector('[data-app="settings"]');
 
 document.getElementById('toggle-dark').addEventListener('change', (e) => {
   document.body.classList.toggle('dark-mode', e.target.checked);
+  localStorage.setItem('darkMode', e.target.checked);
 });
 
 document.getElementById('toggle-24h').addEventListener('change', (e) => {
   use24Hour = e.target.checked;
+  localStorage.setItem('use24Hour', e.target.checked);
 });
 
 document.getElementById('toggle-drag').addEventListener('change', (e) => {
   dragEnabled = e.target.checked;
+  localStorage.setItem('dragEnabled', e.target.checked);
 });
 
 setupWindow(settingsWindow, settingsLink, 'Settings');
