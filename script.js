@@ -1,8 +1,15 @@
+let use24Hour = false;
+let dragEnabled = true;
+
 function updateClock() {
   const now = new Date();
-  const hours = String(now.getHours()).padStart(2, '0');
+  let hours = now.getHours();
   const minutes = String(now.getMinutes()).padStart(2, '0');
-  document.getElementById('clock').textContent = `${hours}:${minutes}`;
+
+  if (!use24Hour) {
+    hours = hours % 12 || 12;
+  }
+  document.getElementById('clock').textContent = `${String(hours).padStart(2, '0')}:${minutes}`;
 }
 
 updateClock();
@@ -34,6 +41,7 @@ function makeDraggable(windowEl) {
   let isDragging = false;
 
   function startDrag(x, y) {
+    if (!dragEnabled) return;
     isDragging = true;
     const rect = windowEl.getBoundingClientRect();
     offsetX = x - rect.left;
@@ -156,3 +164,29 @@ filesBack.addEventListener('click', () => {
 });
 
 makeDraggable(filesWindow);
+
+const settingsWindow = document.getElementById('settings-window');
+const settingsLink = document.querySelector('[data-app="settings"]');
+
+settingsLink.addEventListener('click', () => {
+  settingsWindow.classList.remove('hidden');
+  startMenu.classList.add('hidden');
+});
+
+settingsWindow.querySelector('.close-btn').addEventListener('click', () => {
+  settingsWindow.classList.add('hidden');
+});
+
+document.getElementById('toggle-dark').addEventListener('change', (e) => {
+  document.body.classList.toggle('dark-mode', e.target.checked);
+});
+
+document.getElementById('toggle-24h').addEventListener('change', (e) => {
+  use24Hour = e.target.checked;
+});
+
+document.getElementById('toggle-drag').addEventListener('change', (e) => {
+  dragEnabled = e.target.checked;
+});
+
+makeDraggable(settingsWindow);
