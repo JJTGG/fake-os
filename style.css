@@ -170,3 +170,39 @@ body.dark-mode .app-window {
   background: #2a2a2a;
   color: #fff;
 }
+
+#desktop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 90px;
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  user-select: none;
+}
+
+.desktop-icon .icon {
+  font-size: 32px;
+}
+
+.desktop-icon .icon-label {
+  color: #fff;
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.desktop-icon.selected {
+  background: rgba(255, 255, 255, 0.2);
+}
