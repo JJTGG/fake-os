@@ -66,3 +66,36 @@ function makeDraggable(windowEl) {
 }
 
 makeDraggable(notesWindow);
+
+const calcWindow = document.getElementById('calculator-window');
+const calcLink = document.querySelector('[data-app="calculator"]');
+const calcDisplay = document.getElementById('calc-display');
+
+calcLink.addEventListener('click', () => {
+  calcWindow.classList.remove('hidden');
+  startMenu.classList.add('hidden');
+});
+
+calcWindow.querySelector('.close-btn').addEventListener('click', () => {
+  calcWindow.classList.add('hidden');
+});
+
+document.querySelectorAll('#calc-buttons button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    if (btn.id === 'calc-equals') {
+      try {
+        calcDisplay.value = eval(calcDisplay.value);
+      } catch {
+        calcDisplay.value = 'Error';
+      }
+    } else {
+      calcDisplay.value += btn.dataset.val;
+    }
+  });
+});
+
+document.getElementById('calc-clear').addEventListener('click', () => {
+  calcDisplay.value = '';
+});
+
+makeDraggable(calcWindow);
