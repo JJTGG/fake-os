@@ -40,3 +40,18 @@ body {
   color: #fff;
   font-size: 14px;
 }
+
+#start-menu {
+  position: fixed;
+  bottom: 48px;
+  left: 0;
+  width: 200px;
+  background: #2a2a2a;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px 4px 0 0;
+}
+
+.hidden {
+  display: none;
+}
