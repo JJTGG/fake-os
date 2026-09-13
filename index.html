@@ -9,16 +9,27 @@
 <body>
 <div id="taskbar">
   <button id="start-btn">Start</button>
+  <div id="clock"></div>
 </div>
+
 <div id="start-menu" class="hidden">
   <ul id="app-list">
-  <li data-app="notes">Notes</li>
-  <li data-app="calculator">Calculator</li>
-  <li data-app="files">Files</li>
-  <li data-app="settings">Settings</li>
-</ul>
+    <li data-app="notes">Notes</li>
+    <li data-app="calculator">Calculator</li>
+    <li data-app="files">Files</li>
+    <li data-app="settings">Settings</li>
+  </ul>
 </div>
-<div id="clock"></div>
+
+<div id="notes-window" class="app-window hidden">
+  <div class="window-header">
+    <span>Notes</span>
+    <button class="close-btn">×</button>
+  </div>
+  <div class="window-body">
+    Notes content goes here
+  </div>
+</div>
 </body>
 <script src="script.js"></script>
 </html>
