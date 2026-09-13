@@ -14,3 +14,15 @@ const startMenu = document.getElementById('start-menu');
 startBtn.addEventListener('click', () => {
   startMenu.classList.toggle('hidden');
 });
+
+const notesWindow = document.getElementById('notes-window');
+const notesLink = document.querySelector('[data-app="notes"]');
+
+notesLink.addEventListener('click', () => {
+  notesWindow.classList.remove('hidden');
+  startMenu.classList.add('hidden');
+});
+
+notesWindow.querySelector('.close-btn').addEventListener('click', () => {
+  notesWindow.classList.add('hidden');
+});
