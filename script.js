@@ -60,10 +60,23 @@ function makeDraggable(windowEl) {
   }
 
   function moveDrag(x, y) {
-    if (!isDragging) return;
-    windowEl.style.left = `${x - offsetX}px`;
-    windowEl.style.top = `${y - offsetY}px`;
-  }
+  if (!isDragging) return;
+
+  const windowWidth = windowEl.offsetWidth;
+  const windowHeight = windowEl.offsetHeight;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const taskbarHeight = 48;
+
+  let newLeft = x - offsetX;
+  let newTop = y - offsetY;
+
+  newLeft = Math.max(-(windowWidth - 40), Math.min(newLeft, viewportWidth - 40));
+  newTop = Math.max(0, Math.min(newTop, viewportHeight - taskbarHeight - 40));
+
+  windowEl.style.left = `${newLeft}px`;
+  windowEl.style.top = `${newTop}px`;
+}
 
   function endDrag() {
     isDragging = false;
