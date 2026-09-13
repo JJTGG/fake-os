@@ -7,3 +7,10 @@ function updateClock() {
 
 updateClock();
 setInterval(updateClock, 1000);
+
+const startBtn = document.getElementById('start-btn');
+const startMenu = document.getElementById('start-menu');
+
+startBtn.addEventListener('click', () => {
+  startMenu.classList.toggle('hidden');
+});
