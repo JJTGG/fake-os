@@ -99,3 +99,60 @@ document.getElementById('calc-clear').addEventListener('click', () => {
 });
 
 makeDraggable(calcWindow);
+
+const filesWindow = document.getElementById('files-window');
+const filesLink = document.querySelector('[data-app="files"]');
+const filesList = document.getElementById('files-list');
+const filesBack = document.getElementById('files-back');
+
+const fileSystem = {
+  name: 'root',
+  children: [
+    { name: 'Documents', children: [
+      { name: 'resume.txt' },
+      { name: 'notes.txt' }
+    ]},
+    { name: 'Pictures', children: [
+      { name: 'photo1.png' },
+      { name: 'photo2.png' }
+    ]},
+    { name: 'readme.md' }
+  ]
+};
+
+let currentPath = [fileSystem];
+
+function renderFiles() {
+  const current = currentPath[currentPath.length - 1];
+  filesList.innerHTML = '';
+  current.children.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = item.children ? `📁 ${item.name}` : `📄 ${item.name}`;
+    if (item.children) {
+      li.addEventListener('click', () => {
+        currentPath.push(item);
+        renderFiles();
+      });
+    }
+    filesList.appendChild(li);
+  });
+  filesBack.classList.toggle('hidden', currentPath.length === 1);
+}
+
+filesLink.addEventListener('click', () => {
+  filesWindow.classList.remove('hidden');
+  startMenu.classList.add('hidden');
+  currentPath = [fileSystem];
+  renderFiles();
+});
+
+filesWindow.querySelector('.close-btn').addEventListener('click', () => {
+  filesWindow.classList.add('hidden');
+});
+
+filesBack.addEventListener('click', () => {
+  currentPath.pop();
+  renderFiles();
+});
+
+makeDraggable(filesWindow);
