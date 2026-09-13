@@ -34,6 +34,14 @@ notesWindow.querySelector('.close-btn').addEventListener('click', () => {
   notesWindow.classList.add('hidden');
 });
 
+const notesTextarea = document.getElementById('notes-textarea');
+
+notesTextarea.value = localStorage.getItem('notes') || '';
+
+notesTextarea.addEventListener('input', () => {
+  localStorage.setItem('notes', notesTextarea.value);
+});
+
 function makeDraggable(windowEl) {
   const header = windowEl.querySelector('.window-header');
   let offsetX = 0;
