@@ -136,16 +136,58 @@ const calcWindow = document.getElementById('calculator-window');
 const calcLink = document.querySelector('[data-app="calculator"]');
 const calcDisplay = document.getElementById('calc-display');
 
+let calcValues = [];
+let calcCurrentNumber = '';
+
+function calculate(values) {
+  // First pass: handle × and ÷ (higher precedence)
+  let step1 = [values[0]];
+  for (let i = 1; i < values.length; i += 2) {
+    const op = values[i];
+    const num = values[i + 1];
+    if (op === '*' || op === '/') {
+      const prev = step1.pop();
+      step1.push(op === '*' ? prev * num : prev / num);
+    } else {
+      step1.push(op, num);
+    }
+  }
+
+  // Second pass: handle + and -
+  let result = step1[0];
+  for (let i = 1; i < step1.length; i += 2) {
+    const op = step1[i];
+    const num = step1[i + 1];
+    result = op === '+' ? result + num : result - num;
+  }
+
+  return result;
+}
+
 document.querySelectorAll('#calc-buttons button').forEach((btn) => {
   btn.addEventListener('click', () => {
+    const val = btn.dataset.val;
+
     if (btn.id === 'calc-equals') {
+      calcValues.push(parseFloat(calcCurrentNumber));
       try {
-        calcDisplay.value = eval(calcDisplay.value);
+        const result = calculate(calcValues);
+        calcDisplay.value = result;
       } catch {
         calcDisplay.value = 'Error';
       }
+      calcValues = [];
+      calcCurrentNumber = '';
+      return;
+    }
+
+    if (['+', '-', '*', '/'].includes(val)) {
+      calcValues.push(parseFloat(calcCurrentNumber), val);
+      calcCurrentNumber = '';
+      calcDisplay.value += val;
     } else {
-      calcDisplay.value += btn.dataset.val;
+      calcCurrentNumber += val;
+      calcDisplay.value += val;
     }
   });
 });
