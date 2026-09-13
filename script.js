@@ -60,23 +60,22 @@ function makeDraggable(windowEl) {
   }
 
   function moveDrag(x, y) {
-  if (!isDragging) return;
+    if (!isDragging) return;
 
-  const windowWidth = windowEl.offsetWidth;
-  const windowHeight = windowEl.offsetHeight;
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  const taskbarHeight = 48;
+    const windowWidth = windowEl.offsetWidth;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const taskbarHeight = 48;
 
-  let newLeft = x - offsetX;
-  let newTop = y - offsetY;
+    let newLeft = x - offsetX;
+    let newTop = y - offsetY;
 
-  newLeft = Math.max(-(windowWidth - 40), Math.min(newLeft, viewportWidth - 40));
-  newTop = Math.max(0, Math.min(newTop, viewportHeight - taskbarHeight - 40));
+    newLeft = Math.max(-(windowWidth - 40), Math.min(newLeft, viewportWidth - 40));
+    newTop = Math.max(0, Math.min(newTop, viewportHeight - taskbarHeight - 40));
 
-  windowEl.style.left = `${newLeft}px`;
-  windowEl.style.top = `${newTop}px`;
-}
+    windowEl.style.left = `${newLeft}px`;
+    windowEl.style.top = `${newTop}px`;
+  }
 
   function endDrag() {
     isDragging = false;
@@ -98,8 +97,8 @@ function makeDraggable(windowEl) {
 }
 
 // Handles open/close/minimize/focus/taskbar for one app window.
-// Used by all four apps, so it earns being a shared function.
-function setupWindow(windowEl, appLink, appName) {
+// appTriggers is an array so both the Start menu item and the desktop icon can open the same app.
+function setupWindow(windowEl, appTriggers, appName) {
   const closeBtn = windowEl.querySelector('.close-btn');
   const minimizeBtn = windowEl.querySelector('.minimize-btn');
   let taskbarBtn = null;
@@ -124,13 +123,18 @@ function setupWindow(windowEl, appLink, appName) {
     }
   }
 
-  appLink.addEventListener('click', () => {
+  function openApp() {
     if (windowEl.classList.contains('hidden')) {
       windowEl.classList.remove('hidden');
     }
     bringToFront(windowEl);
     removeTaskbarBtn();
     startMenu.classList.add('hidden');
+  }
+
+  appTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', openApp);
+    trigger.addEventListener('dblclick', openApp);
   });
 
   windowEl.addEventListener('mousedown', () => bringToFront(windowEl));
@@ -149,6 +153,7 @@ function setupWindow(windowEl, appLink, appName) {
 
 const notesWindow = document.getElementById('notes-window');
 const notesLink = document.querySelector('[data-app="notes"]');
+const notesIcon = document.querySelector('.desktop-icon[data-app="notes"]');
 const notesTextarea = document.getElementById('notes-textarea');
 
 notesTextarea.value = localStorage.getItem('notes') || '';
@@ -157,11 +162,12 @@ notesTextarea.addEventListener('input', () => {
   localStorage.setItem('notes', notesTextarea.value);
 });
 
-setupWindow(notesWindow, notesLink, 'Notes');
+setupWindow(notesWindow, [notesLink, notesIcon], 'Notes');
 makeDraggable(notesWindow);
 
 const calcWindow = document.getElementById('calculator-window');
 const calcLink = document.querySelector('[data-app="calculator"]');
+const calcIcon = document.querySelector('.desktop-icon[data-app="calculator"]');
 const calcDisplay = document.getElementById('calc-display');
 
 let calcValues = [];
@@ -226,11 +232,12 @@ document.getElementById('calc-clear').addEventListener('click', () => {
   calcCurrentNumber = '';
 });
 
-setupWindow(calcWindow, calcLink, 'Calculator');
+setupWindow(calcWindow, [calcLink, calcIcon], 'Calculator');
 makeDraggable(calcWindow);
 
 const filesWindow = document.getElementById('files-window');
 const filesLink = document.querySelector('[data-app="files"]');
+const filesIcon = document.querySelector('.desktop-icon[data-app="files"]');
 const filesList = document.getElementById('files-list');
 const filesBack = document.getElementById('files-back');
 
@@ -273,16 +280,22 @@ filesLink.addEventListener('click', () => {
   renderFiles();
 });
 
+filesIcon.addEventListener('click', () => {
+  currentPath = [fileSystem];
+  renderFiles();
+});
+
 filesBack.addEventListener('click', () => {
   currentPath.pop();
   renderFiles();
 });
 
-setupWindow(filesWindow, filesLink, 'Files');
+setupWindow(filesWindow, [filesLink, filesIcon], 'Files');
 makeDraggable(filesWindow);
 
 const settingsWindow = document.getElementById('settings-window');
 const settingsLink = document.querySelector('[data-app="settings"]');
+const settingsIcon = document.querySelector('.desktop-icon[data-app="settings"]');
 
 document.getElementById('toggle-dark').addEventListener('change', (e) => {
   document.body.classList.toggle('dark-mode', e.target.checked);
@@ -299,5 +312,12 @@ document.getElementById('toggle-drag').addEventListener('change', (e) => {
   localStorage.setItem('dragEnabled', e.target.checked);
 });
 
-setupWindow(settingsWindow, settingsLink, 'Settings');
+setupWindow(settingsWindow, [settingsLink, settingsIcon], 'Settings');
 makeDraggable(settingsWindow);
+
+document.querySelectorAll('.desktop-icon').forEach((icon) => {
+  icon.addEventListener('click', () => {
+    document.querySelectorAll('.desktop-icon').forEach((i) => i.classList.remove('selected'));
+    icon.classList.add('selected');
+  });
+});
