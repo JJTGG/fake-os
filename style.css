@@ -34,3 +34,9 @@ body {
 #start-btn:hover {
   background: #444;
 }
+
+#clock {
+  margin-left: auto;
+  color: #fff;
+  font-size: 14px;
+}
