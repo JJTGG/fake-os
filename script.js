@@ -203,19 +203,36 @@ document.querySelectorAll('#calc-buttons button').forEach((btn) => {
     const val = btn.dataset.val;
 
     if (btn.id === 'calc-equals') {
+      if (calcCurrentNumber === '') {
+        calcDisplay.value = 'Error';
+        calcValues = [];
+        return;
+      }
+
       calcValues.push(parseFloat(calcCurrentNumber));
+
       try {
         const result = calculate(calcValues);
+
+        if (!Number.isFinite(result)) {
+          throw new Error('Invalid calculation');
+        }
+
         calcDisplay.value = result;
       } catch {
         calcDisplay.value = 'Error';
       }
+
       calcValues = [];
       calcCurrentNumber = '';
       return;
     }
 
     if (['+', '-', '*', '/'].includes(val)) {
+      if (calcCurrentNumber === '') {
+        return;
+      }
+
       calcValues.push(parseFloat(calcCurrentNumber), val);
       calcCurrentNumber = '';
       calcDisplay.value += val;
